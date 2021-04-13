@@ -1,0 +1,53 @@
+{
+    "name": "pip-services3-rpc-nodex",
+    "version": "1.0.0",
+    "author": "Conceptual Vision Consulting LLC",
+    "description": "Remote procedure calls for Pip.Services in Node.js",
+    "contributors": [
+        {
+            "name": "Sergey Seroukhov",
+            "email": "seroukhov@gmail.com"
+        }
+    ],
+    "main": "./obj/src/index.js",
+    "typings": "./obj/src/index.d.ts",
+    "keywords": [
+        "pip.services",
+        "microservice",
+        "communication",
+        "rpc",
+        "rest",
+        "library"
+    ],
+    "noAnalyze": true,
+    "repository": {
+        "type": "git",
+        "url": "ssh://git@github.com:pip-services3-nodex/pip-services3-rpc-nodex.git"
+    },
+    "license": "MIT",
+    "engines": {
+        "node": ">=14.0.0"
+    },
+    "private": false,
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc --watch",
+        "test": "mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
+        "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test"
+    },
+    "dependencies": {
+        "pip-services3-commons-nodex": "^1.0.1",
+        "pip-services3-components-nodex": "^1.0.0",
+        "querystring": "^0.2.0",
+        "restify": "8.5.1",
+        "restify-clients": "^2.6.4",
+        "restify-cors-middleware2": "2.1.2"
+    },
+    "devDependencies": {
+        "@types/chai": "^4.0.0",
+        "@types/mocha": "^8.0.0",
+        "@types/node": "*",
+        "chai": "^4.3.4",
+        "mocha": "^8.3.2"
+    }
+}

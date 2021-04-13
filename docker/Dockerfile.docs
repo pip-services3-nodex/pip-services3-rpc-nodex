@@ -1,0 +1,32 @@
+FROM node:14-alpine
+
+# Configure npm
+RUN npm set progress=false && npm config set depth 0
+
+
+# Install git and ssh
+RUN apk update && apk add git && apk add openssh
+
+# Install python
+RUN apk add --update python python-dev py-pip build-base \
+  && pip install virtualenv \
+  && rm -rf /var/cache/apk/*
+
+
+# Set working directory
+WORKDIR /app
+
+RUN npm -g config set user root 
+
+# Install dependencies
+RUN npm install typescript@3.6.2 \
+    && npm install highlight.js@9.12.0 \
+    && npm install handlebars@4.0.12 \
+    && npm install js-yaml@3.12.0 \
+    && npm install typedoc@0.11.1 \
+    && npm install git+https://github.com/hobbyguy77/typedoc-plugin-external-module-name.git
+    
+# copy the entire project
+COPY . .
+
+RUN npx typedoc --out docs src --mode modules --excludeExternals --excludePrivate --target ES6 --ignoreCompilerErrors 
