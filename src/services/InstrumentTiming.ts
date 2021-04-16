@@ -34,7 +34,15 @@ export class InstrumentTiming {
         this._traceTiming = null;
     }
 
-    public endTiming(): void {
+    public endTiming(err?: Error): void {
+        if (err == null) {
+            this.endSuccess();
+        } else {
+            this.endFailure(err);
+        }
+    }
+
+    public endSuccess(): void {
         if (this._counterTiming != null) {
             this._counterTiming.endTiming();
         }

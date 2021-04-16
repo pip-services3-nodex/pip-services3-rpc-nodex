@@ -19,7 +19,15 @@ class InstrumentTiming {
         this._counterTiming = null;
         this._traceTiming = null;
     }
-    endTiming() {
+    endTiming(err) {
+        if (err == null) {
+            this.endSuccess();
+        }
+        else {
+            this.endFailure(err);
+        }
+    }
+    endSuccess() {
         if (this._counterTiming != null) {
             this._counterTiming.endTiming();
         }
