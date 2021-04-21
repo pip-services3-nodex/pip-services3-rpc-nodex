@@ -16,4 +16,5 @@ __exportStar(require("./clients"), exports);
 __exportStar(require("./services"), exports);
 __exportStar(require("./auth"), exports);
 __exportStar(require("./build"), exports);
+__exportStar(require("./test"), exports);
 //# sourceMappingURL=index.js.map
