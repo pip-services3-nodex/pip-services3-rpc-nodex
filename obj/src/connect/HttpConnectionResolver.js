@@ -130,7 +130,7 @@ class HttpConnectionResolver {
         let connection = pip_services3_commons_nodex_1.ConfigParams.mergeConfigs(...connections);
         let uri = connection.getAsString("uri");
         if (uri == null || uri == "") {
-            let protocol = connection.getAsStringWithDefault("protocol", "uri");
+            let protocol = connection.getAsStringWithDefault("protocol", "http");
             let host = connection.getAsString("host");
             let port = connection.getAsInteger("port");
             uri = protocol + "://" + host;

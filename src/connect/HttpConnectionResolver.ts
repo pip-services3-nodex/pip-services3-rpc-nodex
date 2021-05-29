@@ -136,7 +136,7 @@ export class HttpConnectionResolver implements IReferenceable, IConfigurable {
         let uri = connection.getAsString("uri");
 
         if (uri == null || uri == "") {
-            let protocol = connection.getAsStringWithDefault("protocol", "uri");
+            let protocol = connection.getAsStringWithDefault("protocol", "http");
             let host = connection.getAsString("host");
             let port = connection.getAsInteger("port");
 
