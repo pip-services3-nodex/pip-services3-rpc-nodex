@@ -1,6 +1,6 @@
 {
     "name": "pip-services3-rpc-nodex",
     "registry": "pipdevs",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "build": 0
 }

@@ -1,8 +1,8 @@
 {
     "name": "pip-services3-rpc-nodex",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "author": "Conceptual Vision Consulting LLC",
-    "description": "Remote procedure calls for Pip.Services in Node.js",
+    "description": "Remote procedure calls for Pip.Services in Node.js / ES2017",
     "contributors": [
         {
             "name": "Sergey Seroukhov",

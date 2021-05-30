@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestCommandableHttpClient = void 0;
 /** @module test */
@@ -27,12 +18,7 @@ class TestCommandableHttpClient extends CommandableHttpClient_1.CommandableHttpC
      * @returns                 a command execution result.
      */
     callCommand(name, correlationId, params) {
-        const _super = Object.create(null, {
-            callCommand: { get: () => super.callCommand }
-        });
-        return __awaiter(this, void 0, void 0, function* () {
-            return _super.callCommand.call(this, name, correlationId, params);
-        });
+        return super.callCommand(name, correlationId, params);
     }
 }
 exports.TestCommandableHttpClient = TestCommandableHttpClient;

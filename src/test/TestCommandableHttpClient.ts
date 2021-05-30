@@ -16,7 +16,7 @@ export class TestCommandableHttpClient extends CommandableHttpClient {
      * @param params            command parameters.
      * @returns                 a command execution result.
      */
-    public async callCommand<T>(name: string, correlationId: string, params: any): Promise<T> {
+    public callCommand<T>(name: string, correlationId: string, params: any): Promise<T> {
         return super.callCommand(name, correlationId, params);
     }
 }
