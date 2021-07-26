@@ -204,7 +204,7 @@ class HttpEndpoint {
                 let corsMiddleware = require('restify-cors-middleware2');
                 let origins = this._allowedOrigins;
                 if (origins.length == 0) {
-                    origins.push("*");
+                    origins = ["*"];
                 }
                 let cors = corsMiddleware({
                     preflightMaxAge: 5,

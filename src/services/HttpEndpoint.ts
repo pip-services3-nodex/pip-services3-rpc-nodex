@@ -235,7 +235,7 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
 
             let origins = this._allowedOrigins;
             if (origins.length == 0) {
-                origins.push("*");
+                origins = ["*"];
             }
             let cors = corsMiddleware({
                 preflightMaxAge: 5, //Optional
