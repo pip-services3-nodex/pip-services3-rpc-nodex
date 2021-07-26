@@ -12,6 +12,9 @@ import { IRegisterable } from './IRegisterable';
  *
  * Parameters to pass to the [[configure]] method for component configuration:
  *
+ * - cors_headers - definition of CORS headers
+ *   - <header>: <origin>
+ *   - <header>: <origin>
  * - connection(s) - the connection resolver's connections:
  *     - "connection.discovery_key" - the key to use for connection resolving in a discovery service;
  *     - "connection.protocol" - the connection's protocol;
@@ -58,6 +61,8 @@ export declare class HttpEndpoint implements IOpenable, IConfigurable, IReferenc
     private _protocolUpgradeEnabled;
     private _uri;
     private _registrations;
+    private _allowedHeaders;
+    private _allowedOrigins;
     /**
      * Configures this HttpEndpoint using the given configuration parameters.
      *
@@ -168,4 +173,5 @@ export declare class HttpEndpoint implements IOpenable, IConfigurable, IReferenc
      * @param action        the middleware action to perform at the given route.
      */
     registerInterceptor(route: string, action: (req: any, res: any, next: () => void) => void): void;
+    private addCorsHeader;
 }

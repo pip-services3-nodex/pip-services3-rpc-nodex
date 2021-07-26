@@ -23,6 +23,9 @@ import { IRegisterable } from './IRegisterable';
  * 
  * Parameters to pass to the [[configure]] method for component configuration:
  * 
+ * - cors_headers - definition of CORS headers
+ *   - <header>: <origin>
+ *   - <header>: <origin>
  * - connection(s) - the connection resolver's connections:
  *     - "connection.discovery_key" - the key to use for connection resolving in a discovery service;
  *     - "connection.protocol" - the connection's protocol;
@@ -85,6 +88,8 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
     private _protocolUpgradeEnabled: boolean = false;
     private _uri: string;
     private _registrations: IRegisterable[] = [];
+    private _allowedHeaders: string[] = ["correlation_id"];
+    private _allowedOrigins: string[] = [];
     
     /**
      * Configures this HttpEndpoint using the given configuration parameters.
@@ -111,6 +116,17 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
         this._maintenanceEnabled = config.getAsBooleanWithDefault('options.maintenance_enabled', this._maintenanceEnabled);
         this._fileMaxSize = config.getAsLongWithDefault('options.file_max_size', this._fileMaxSize);
         this._protocolUpgradeEnabled = config.getAsBooleanWithDefault('options.protocol_upgrade_enabled', this._protocolUpgradeEnabled);
+
+        let corsParams = config.getSection("cors-headers");
+        let headers = corsParams.getSectionNames();
+        if (headers != null && headers.length > 0) {
+            for (let header of headers) {
+                let origin = corsParams.getAsString(header);
+                if (origin != null) {
+                    this.addCorsHeader(header, origin);
+                }
+            }
+        }
     }
         
     /**
@@ -216,11 +232,16 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
             
             // Configure CORS requests
             let corsMiddleware = require('restify-cors-middleware2');
+
+            let origins = this._allowedOrigins;
+            if (origins.length == 0) {
+                origins.push("*");
+            }
             let cors = corsMiddleware({
                 preflightMaxAge: 5, //Optional
-                origins: ['*'],
-                allowHeaders: ['Authenticate', 'x-session-id'],
-                exposeHeaders: ['Authenticate', 'x-session-id']
+                origins: origins,
+                allowHeaders: this._allowedHeaders,
+                exposeHeaders: this._allowedHeaders
             });
             this._server.pre(cors.preflight);
             this._server.use(cors.actual);
@@ -440,6 +461,14 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
                 next();
             else action(req, res, next);
         });
+    }
+
+    private addCorsHeader(header: string, origin: string): void {
+        this._allowedHeaders = this._allowedHeaders.filter(h => h != header);
+        this._allowedHeaders.push(header);
+
+        this._allowedOrigins = this._allowedOrigins.filter(o => o != origin);
+        this._allowedOrigins.push(origin);
     }
 
 }
