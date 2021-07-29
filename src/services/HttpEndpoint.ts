@@ -23,9 +23,8 @@ import { IRegisterable } from './IRegisterable';
  * 
  * Parameters to pass to the [[configure]] method for component configuration:
  * 
- * - cors_headers - definition of CORS headers
- *   - <header>: <origin>
- *   - <header>: <origin>
+ * - cors_headers - a comma-separated list of allowed CORS headers
+ * - cors_origins - a comma-separated list of allowed CORS origins
  * - connection(s) - the connection resolver's connections:
  *     - "connection.discovery_key" - the key to use for connection resolving in a discovery service;
  *     - "connection.protocol" - the connection's protocol;
@@ -117,14 +116,21 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
         this._fileMaxSize = config.getAsLongWithDefault('options.file_max_size', this._fileMaxSize);
         this._protocolUpgradeEnabled = config.getAsBooleanWithDefault('options.protocol_upgrade_enabled', this._protocolUpgradeEnabled);
 
-        let corsParams = config.getSection("cors-headers");
-        let headers = corsParams.getSectionNames();
-        if (headers != null && headers.length > 0) {
-            for (let header of headers) {
-                let origin = corsParams.getAsString(header);
-                if (origin != null) {
-                    this.addCorsHeader(header, origin);
-                }
+        let headers = config.getAsStringWithDefault("cors_headers", "").split(",");
+        for (let header of headers) {
+            header = header.trim();
+            if (header != "") {
+                this._allowedHeaders = this._allowedHeaders.filter(h => h != header);
+                this._allowedHeaders.push(header);                
+            }
+        }
+
+        let origins = config.getAsStringWithDefault("cors_origins", "").split(",");
+        for (let origin of origins) {
+            origin = origin.trim();
+            if (origin != "") {
+                this._allowedOrigins = this._allowedOrigins.filter(h => h != origin);
+                this._allowedOrigins.push(origin);                
             }
         }
     }
@@ -462,13 +468,5 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
             else action(req, res, next);
         });
     }
-
-    private addCorsHeader(header: string, origin: string): void {
-        this._allowedHeaders = this._allowedHeaders.filter(h => h != header);
-        this._allowedHeaders.push(header);
-
-        this._allowedOrigins = this._allowedOrigins.filter(o => o != origin);
-        this._allowedOrigins.push(origin);
-    }
-
+    
 }
