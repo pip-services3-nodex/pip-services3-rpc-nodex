@@ -94,7 +94,7 @@ export class DummyRestService extends RestService {
     }
         
     public register() {
-        this.registerInterceptor('/dummies', this.incrementNumberOfCalls);
+        this.registerInterceptor('/dummies$', this.incrementNumberOfCalls);
 
         this.registerRoute(
             'get', '/dummies', 

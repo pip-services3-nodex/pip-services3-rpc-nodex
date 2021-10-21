@@ -463,7 +463,8 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
         route = this.fixRoute(route);
 
         this._server.use((req, res, next) => {
-            if (route != null && route != "" && !req.url.startsWith(route))
+            let match = (req.url.match(route) || []).length > 0;
+            if (route != null && route != "" && !match)
                 next();
             else action(req, res, next);
         });

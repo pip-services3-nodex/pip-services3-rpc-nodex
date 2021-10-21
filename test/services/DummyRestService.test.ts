@@ -142,6 +142,7 @@ suite('DummyRestService', ()=> {
                 else reject(err);
             });
         });
+        assert.equal(service.getNumberOfCalls(), 4); // Check interceptor
         assert.equal("test_cor_id_header", result.correlation_id);
     });
 

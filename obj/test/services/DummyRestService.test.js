@@ -136,6 +136,7 @@ suite('DummyRestService', () => {
                     reject(err);
             });
         });
+        assert.equal(service.getNumberOfCalls(), 4); // Check interceptor
         assert.equal("test_cor_id_header", result.correlation_id);
     }));
     test('Get OpenApi Spec From String', () => __awaiter(void 0, void 0, void 0, function* () {

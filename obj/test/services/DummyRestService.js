@@ -72,7 +72,7 @@ class DummyRestService extends RestService_1.RestService {
         });
     }
     register() {
-        this.registerInterceptor('/dummies', this.incrementNumberOfCalls);
+        this.registerInterceptor('/dummies$', this.incrementNumberOfCalls);
         this.registerRoute('get', '/dummies', new pip_services3_commons_nodex_4.ObjectSchema(true)
             .withOptionalProperty("skip", pip_services3_commons_nodex_5.TypeCode.String)
             .withOptionalProperty("take", pip_services3_commons_nodex_5.TypeCode.String)
