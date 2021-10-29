@@ -31,8 +31,8 @@ suite('DummyDirectClient', () => {
         yield client.close(null);
     }));
     setup(() => {
-        _dummy1 = { id: null, key: "Key 1", content: "Content 1" };
-        _dummy2 = { id: null, key: "Key 2", content: "Content 2" };
+        _dummy1 = { id: null, key: "Key 1", content: "Content 1", array: [{ key: "SubKey 1", content: "SubContent 1" }] };
+        _dummy2 = { id: null, key: "Key 2", content: "Content 2", array: [{ key: "SubKey 1", content: "SubContent 1" }] };
     });
     test('CRUD Operations', () => __awaiter(void 0, void 0, void 0, function* () {
         yield fixture.testCrudOperations();

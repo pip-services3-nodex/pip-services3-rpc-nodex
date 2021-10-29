@@ -4,15 +4,21 @@ exports.CommandableSwaggerDocument = void 0;
 /** @module services */
 const pip_services3_commons_nodex_1 = require("pip-services3-commons-nodex");
 const pip_services3_commons_nodex_2 = require("pip-services3-commons-nodex");
+const pip_services3_commons_nodex_3 = require("pip-services3-commons-nodex");
+const pip_services3_commons_nodex_4 = require("pip-services3-commons-nodex");
+const pip_services3_commons_nodex_5 = require("pip-services3-commons-nodex");
 // Todo: Refactor to use plan JS objects
 class CommandableSwaggerDocument {
     constructor(baseRoute, config, commands) {
         this.content = '';
         this.version = "3.0.2";
         this.infoVersion = "1";
+        this.objectType = new Map([
+            ['type', 'object']
+        ]);
         this.baseRoute = baseRoute;
         this.commands = commands !== null && commands !== void 0 ? commands : [];
-        config = config !== null && config !== void 0 ? config : new pip_services3_commons_nodex_1.ConfigParams();
+        config = config !== null && config !== void 0 ? config : new pip_services3_commons_nodex_2.ConfigParams();
         this.infoTitle = config.getAsStringWithDefault("name", "CommandableHttpService");
         this.infoDescription = config.getAsStringWithDefault("description", "Commandable microservice");
     }
@@ -77,14 +83,30 @@ class CommandableSwaggerDocument {
         let schema = command._schema; //command.getSchema();// as ObjectSchema;
         if (schema == null || schema.getProperties() == null)
             return null;
+        return this.createPropertyData(schema, true);
+    }
+    createPropertyData(schema, includeRequired) {
         let properties = new Map();
         let required = [];
         schema.getProperties().forEach(property => {
-            properties.set(property.getName(), new Map([
-                ["type", this.typeToString(property.getType())]
-            ]));
-            if (property.isRequired)
-                required.push(property.getName());
+            if (property.getType() == null) {
+                properties.set(property.Name, this.objectType);
+            }
+            else {
+                let propertyName = property.getName();
+                let propertyType = property.getType();
+                if (propertyType instanceof pip_services3_commons_nodex_1.ArraySchema) {
+                    properties.set(propertyName, new Map([
+                        ["type", "array"],
+                        ["items", this.createPropertyTypeData(propertyType.getValueType())]
+                    ]));
+                }
+                else {
+                    properties.set(propertyName, this.createPropertyTypeData(propertyType));
+                }
+                if (includeRequired && property.isRequired)
+                    required.push(propertyName);
+            }
         });
         let data = new Map([
             ["properties", properties]
@@ -93,6 +115,55 @@ class CommandableSwaggerDocument {
             data.set("required", required);
         }
         return data;
+    }
+    createPropertyTypeData(propertyType) {
+        if (propertyType instanceof pip_services3_commons_nodex_3.ObjectSchema) {
+            let objectMap = this.createPropertyData(propertyType, false);
+            return new Map([...Array.from(this.objectType.entries()), ...Array.from(objectMap.entries())]);
+        }
+        else {
+            var typeCode;
+            if (propertyType in pip_services3_commons_nodex_5.TypeCode) {
+                typeCode = propertyType;
+            }
+            else {
+                typeCode = pip_services3_commons_nodex_4.TypeConverter.toTypeCode(propertyType);
+            }
+            if (typeCode == pip_services3_commons_nodex_5.TypeCode.Unknown || typeCode == pip_services3_commons_nodex_5.TypeCode.Map) {
+                typeCode = pip_services3_commons_nodex_5.TypeCode.Object;
+            }
+            switch (typeCode) {
+                case pip_services3_commons_nodex_5.TypeCode.Integer:
+                    return new Map([
+                        ["type", "integer"],
+                        ["format", "int32"]
+                    ]);
+                case pip_services3_commons_nodex_5.TypeCode.Long:
+                    return new Map([
+                        ["type", "number"],
+                        ["format", "int64"]
+                    ]);
+                case pip_services3_commons_nodex_5.TypeCode.Float:
+                    return new Map([
+                        ["type", "number"],
+                        ["format", "float"]
+                    ]);
+                case pip_services3_commons_nodex_5.TypeCode.Double:
+                    return new Map([
+                        ["type", "number"],
+                        ["format", "double"]
+                    ]);
+                case pip_services3_commons_nodex_5.TypeCode.DateTime:
+                    return new Map([
+                        ["type", "string"],
+                        ["format", "date-time"]
+                    ]);
+                default:
+                    return new Map([
+                        ["type", pip_services3_commons_nodex_4.TypeConverter.toString(typeCode)]
+                    ]);
+            }
+        }
     }
     createResponsesData() {
         return new Map([
@@ -166,20 +237,6 @@ class CommandableSwaggerDocument {
     }
     getSpaces(length) {
         return ' '.repeat(length * 2);
-    }
-    typeToString(type) {
-        // allowed types: array, boolean, integer, number, object, string
-        if (type == pip_services3_commons_nodex_2.TypeCode.Integer || type == pip_services3_commons_nodex_2.TypeCode.Long)
-            return 'integer';
-        if (type == pip_services3_commons_nodex_2.TypeCode.Double || type == pip_services3_commons_nodex_2.TypeCode.Float)
-            return 'number';
-        if (type == pip_services3_commons_nodex_2.TypeCode.String)
-            return 'string';
-        if (type == pip_services3_commons_nodex_2.TypeCode.Boolean)
-            return 'boolean';
-        if (type == pip_services3_commons_nodex_2.TypeCode.Array)
-            return 'array';
-        return 'object';
     }
 }
 exports.CommandableSwaggerDocument = CommandableSwaggerDocument;

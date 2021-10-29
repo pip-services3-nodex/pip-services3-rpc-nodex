@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RoleAuthManager = exports.OwnerAuthManager = exports.BasicAuthManager = void 0;
 /**
  * @module auth
  * @preferred

@@ -16,6 +16,7 @@ const pip_services3_commons_nodex_2 = require("pip-services3-commons-nodex");
 const pip_services3_commons_nodex_3 = require("pip-services3-commons-nodex");
 const DummyController_1 = require("../DummyController");
 const DummyCommandableHttpService_1 = require("./DummyCommandableHttpService");
+const fs = require("fs");
 suite('DummyCommandableHttpService', () => {
     let _dummy1;
     let _dummy2;
@@ -37,8 +38,8 @@ suite('DummyCommandableHttpService', () => {
     setup(() => {
         let url = 'http://localhost:3000';
         rest = restify.createJsonClient({ url: url, version: '*', headers: headers });
-        _dummy1 = { id: null, key: "Key 1", content: "Content 1" };
-        _dummy2 = { id: null, key: "Key 2", content: "Content 2" };
+        _dummy1 = { id: null, key: "Key 1", content: "Content 1", array: [{ key: "SubKey 1", content: "SubContent 1" }] };
+        _dummy2 = { id: null, key: "Key 2", content: "Content 2", array: [{ key: "SubKey 1", content: "SubContent 1" }] };
     });
     test('CRUD Operations', () => __awaiter(void 0, void 0, void 0, function* () {
         // Create one dummy
@@ -152,6 +153,13 @@ suite('DummyCommandableHttpService', () => {
             client.get("/dummy/swagger", (err, req, res) => {
                 resolve(res.body);
             });
+        });
+        // uncomment and copy to editor.swagger.io for check
+        fs.writeFile('file.txt', result, function (err) {
+            if (err) {
+                return console.error(err);
+            }
+            console.log("File created!");
         });
         assert.isTrue(result.startsWith("openapi:"));
     }));

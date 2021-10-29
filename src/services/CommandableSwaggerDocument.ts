@@ -1,5 +1,8 @@
 /** @module services */
+import { ArraySchema } from "pip-services3-commons-nodex";
 import { ConfigParams } from "pip-services3-commons-nodex";
+import { ObjectSchema } from "pip-services3-commons-nodex";
+import { TypeConverter } from "pip-services3-commons-nodex";
 import { ICommand } from "pip-services3-commons-nodex";
 import { TypeCode } from "pip-services3-commons-nodex";
 
@@ -23,6 +26,12 @@ export class CommandableSwaggerDocument {
 
     public infoLicenseName: string;
     public infoLicenseUrl: string;
+
+    protected readonly objectType: Map<string, any> = new Map<string, any>(
+        [
+            ['type', 'object']
+        ]
+    );
 
     constructor(baseRoute: string, config: ConfigParams, commands: ICommand[]) {
         this.baseRoute = baseRoute;
@@ -111,17 +120,36 @@ export class CommandableSwaggerDocument {
         if (schema == null || schema.getProperties() == null)
             return null;
 
+        return this.createPropertyData(schema, true);
+    }
+
+    private createPropertyData(schema: any, includeRequired: boolean): Map<string, any> {
         let properties = new Map<string, any>();
         let required = [];
 
         schema.getProperties().forEach(property => {
-            properties.set(property.getName(), new Map<string, any>(
-                [
-                    ["type", this.typeToString(property.getType())]
-                ]
-            ));
 
-            if (property.isRequired) required.push(property.getName());
+            if (property.getType() == null) {
+                properties.set(property.Name, this.objectType);
+            }
+            else {
+                let propertyName = property.getName();
+                let propertyType = property.getType();
+
+                if (propertyType instanceof ArraySchema) {
+                    properties.set(propertyName, new Map<string, any>(
+                        [
+                            ["type", "array"],
+                            ["items", this.createPropertyTypeData((propertyType as ArraySchema).getValueType())]
+                        ]
+                    ));
+                }
+                else {
+                    properties.set(propertyName, this.createPropertyTypeData(propertyType));
+                }
+
+                if (includeRequired && property.isRequired) required.push(propertyName);
+            }
         });
 
         let data = new Map<string, any>(
@@ -135,6 +163,65 @@ export class CommandableSwaggerDocument {
         }
 
         return data;
+    }
+
+    private createPropertyTypeData(propertyType: any): Map<string, any> {
+        if (propertyType instanceof ObjectSchema) {
+            let objectMap = this.createPropertyData(propertyType as ObjectSchema, false);
+            return new Map<string, any>([...Array.from(this.objectType.entries()), ...Array.from(objectMap.entries())])
+        }
+        else {
+            var typeCode: TypeCode;
+            
+            if (propertyType in TypeCode) {
+                typeCode = propertyType;
+            }
+            else {
+                typeCode = TypeConverter.toTypeCode(propertyType);    
+            }
+                
+            if (typeCode == TypeCode.Unknown || typeCode == TypeCode.Map) {
+                typeCode = TypeCode.Object;
+            }
+
+            switch (typeCode) {
+                case TypeCode.Integer:
+                    return new Map<string, any>(
+                        [
+                            [ "type", "integer" ],
+                            [ "format", "int32" ]
+                        ]);
+                case TypeCode.Long:
+                    return new Map<string, any>(
+                        [
+                            [ "type", "number" ],
+                            [ "format", "int64" ]
+                        ]);
+                case TypeCode.Float:
+                    return new Map<string, any>(
+                        [
+                            [ "type", "number" ],
+                            [ "format", "float" ]
+                        ]);
+                case TypeCode.Double:
+                    return new Map<string, any>(
+                        [
+                            [ "type", "number" ],
+                            [ "format", "double" ]
+                        ]);
+                case TypeCode.DateTime:
+                    return new Map<string, any>(
+                        [
+                            [ "type", "string" ],
+                            [ "format", "date-time" ]
+                        ]);
+                default:
+                    return new Map<string, any>(
+                        [
+                            [ "type", TypeConverter.toString(typeCode) ]
+                        ]);
+            }
+        }
     }
 
     private createResponsesData(): Map<string, any> {
@@ -178,7 +265,7 @@ export class CommandableSwaggerDocument {
                 }
             }
             else if (typeof value === "object") {
-                if (Array.from(value.values()).findIndex((item: any) => { return item != null; }) >= 0) {
+                if (Array.from(value.values()).findIndex((item: any) => { return item != null; }) >= 0) {                    
                     this.writeName(indent, key);
                     this.writeData(indent + 1, value);
                 }
@@ -220,16 +307,5 @@ export class CommandableSwaggerDocument {
 
     protected getSpaces(length: number): string {
         return ' '.repeat(length * 2);
-    }
-
-    protected typeToString(type: any): string {
-        // allowed types: array, boolean, integer, number, object, string
-        if (type == TypeCode.Integer || type == TypeCode.Long) return 'integer';
-        if (type == TypeCode.Double || type == TypeCode.Float) return 'number';
-        if (type == TypeCode.String) return 'string';
-        if (type == TypeCode.Boolean) return 'boolean';
-        if (type == TypeCode.Array) return 'array';
-
-        return 'object';
     }
 }

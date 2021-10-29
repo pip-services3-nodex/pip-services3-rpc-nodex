@@ -9,6 +9,8 @@ import { Dummy } from '../Dummy';
 import { DummyController } from '../DummyController';
 import { DummyCommandableHttpService } from './DummyCommandableHttpService';
 
+// import * as fs from 'fs';
+
 suite('DummyCommandableHttpService', ()=> {
     let _dummy1: Dummy;
     let _dummy2: Dummy;
@@ -47,8 +49,8 @@ suite('DummyCommandableHttpService', ()=> {
         let url = 'http://localhost:3000';
         rest = restify.createJsonClient({ url: url, version: '*', headers: headers });
 
-        _dummy1 = { id: null, key: "Key 1", content: "Content 1"};
-        _dummy2 = { id: null, key: "Key 2", content: "Content 2"};
+        _dummy1 = { id: null, key: "Key 1", content: "Content 1", array: [ { key: "SubKey 1", content: "SubContent 1"} ]};
+        _dummy2 = { id: null, key: "Key 2", content: "Content 2", array: [ { key: "SubKey 1", content: "SubContent 1"} ]};
     });
 
     test('CRUD Operations', async () => {
@@ -187,6 +189,15 @@ suite('DummyCommandableHttpService', ()=> {
                 }
             );
         });
+
+        // uncomment and copy to editor.swagger.io for check
+        // fs.writeFile('file.txt', result,  function(err) {
+        //     if (err) {
+        //         return console.error(err);
+        //     }
+        //     console.log("File created!");
+        // });
+
         assert.isTrue(result.startsWith("openapi:"));
     });
 

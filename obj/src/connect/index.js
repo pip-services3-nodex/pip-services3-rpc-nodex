@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HttpConnectionResolver = void 0;
 /**
  * @module connect
  * @preferred

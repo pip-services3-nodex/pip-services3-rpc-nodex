@@ -19,8 +19,8 @@ class DummyClientFixture {
     }
     testCrudOperations() {
         return __awaiter(this, void 0, void 0, function* () {
-            let dummy1 = { id: null, key: "Key 1", content: "Content 1" };
-            let dummy2 = { id: null, key: "Key 2", content: "Content 2" };
+            let dummy1 = { id: null, key: "Key 1", content: "Content 1", array: [{ key: "SubKey 1", content: "SubContent 1" }] };
+            let dummy2 = { id: null, key: "Key 2", content: "Content 2", array: [{ key: "SubKey 1", content: "SubContent 1" }] };
             // Create one dummy
             let dummy = yield this._client.createDummy(null, dummy1);
             assert.isObject(dummy);
