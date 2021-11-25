@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DefaultRpcFactory = void 0;
 /**
  * @module build
  * @preferred

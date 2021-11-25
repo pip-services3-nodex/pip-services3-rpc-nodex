@@ -16,7 +16,7 @@ const pip_services3_commons_nodex_2 = require("pip-services3-commons-nodex");
 const pip_services3_commons_nodex_3 = require("pip-services3-commons-nodex");
 const DummyController_1 = require("../DummyController");
 const DummyCommandableHttpService_1 = require("./DummyCommandableHttpService");
-const fs = require("fs");
+// import * as fs from 'fs';
 suite('DummyCommandableHttpService', () => {
     let _dummy1;
     let _dummy2;
@@ -155,12 +155,12 @@ suite('DummyCommandableHttpService', () => {
             });
         });
         // uncomment and copy to editor.swagger.io for check
-        fs.writeFile('file.txt', result, function (err) {
-            if (err) {
-                return console.error(err);
-            }
-            console.log("File created!");
-        });
+        // fs.writeFile('file.txt', result,  function(err) {
+        //     if (err) {
+        //         return console.error(err);
+        //     }
+        //     console.log("File created!");
+        // });
         assert.isTrue(result.startsWith("openapi:"));
     }));
     test('OpenApi Spec Override', () => __awaiter(void 0, void 0, void 0, function* () {

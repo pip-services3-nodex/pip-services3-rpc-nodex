@@ -215,10 +215,16 @@ class HttpEndpoint {
                     preflightMaxAge: 5,
                     origins: origins,
                     allowHeaders: this._allowedHeaders,
-                    exposeHeaders: this._allowedHeaders
+                    exposeHeaders: this._allowedHeaders,
+                    allowCredentialsAllOrigins: origins[0] == '*' ? true : false
                 });
                 this._server.pre(cors.preflight);
                 this._server.use(cors.actual);
+                // fixed bug with return header for restify-cors-middleware
+                this._server.pre((req, res, next) => {
+                    res.header("Access-Control-Allow-Origin", origins.join(','));
+                    next();
+                });
                 this._server.use((req, res, next) => { this.addCompatibility(req, res, next); });
                 this._server.use((req, res, next) => { this.noCache(req, res, next); });
                 this._server.use((req, res, next) => { this.doMaintenance(req, res, next); });
