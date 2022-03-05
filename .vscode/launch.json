@@ -29,6 +29,31 @@
 			"sourceMaps": true,
 			// Redirect VS to find compiled code
 			"outDir": "${workspaceRoot}/obj"
-		}
+		},
+		{
+            "type": "node",
+            "request": "launch",
+            "name": "Run mocha - Current File",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+           	// Automatically stop program after launch.
+			"stopOnEntry": false,
+			// ${file} will run the active file
+			"args": ["-t","10000","-R","spec","-u","tdd","--require", "ts-node/register", "--recursive","${file}"],
+			"cwd": "${workspaceRoot}",
+			// Specify "require" for CommonJS
+			"runtimeArgs": [ "--nolazy" ],
+			// Workspace relative or absolute path to the runtime executable to be used. Default is the runtime executable on the PATH.
+			"runtimeExecutable": null,
+			// Environment variables passed to the program.
+			"env": { "NODE_ENV": "production"},
+			// Enable TypeScript debugging
+			"sourceMaps": true,
+			// Redirect VS to find compiled code
+			"outDir": "${workspaceRoot}/obj",
+
+			"console": "integratedTerminal",
+			// VS Code runs the console on every session
+			"internalConsoleOptions": "openOnSessionStart"
+        }
     ]
 }

@@ -1,6 +1,6 @@
 {
     "name": "pip-services3-rpc-nodex",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "author": "Conceptual Vision Consulting LLC",
     "description": "Remote procedure calls for Pip.Services in Node.js / ES2017",
     "contributors": [
@@ -41,7 +41,8 @@
         "querystring": "^0.2.0",
         "restify": "8.5.1",
         "restify-clients": "^2.6.4",
-        "restify-cors-middleware2": "2.1.2"
+        "restify-cors-middleware2": "2.1.2",
+        "ts-node": "10.6.0"
     },
     "devDependencies": {
         "@types/chai": "^4.0.0",
