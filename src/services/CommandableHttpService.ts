@@ -113,6 +113,7 @@ export abstract class CommandableHttpService extends RestService {
                     timing.endTiming();
                 } catch (ex) {
                     timing.endFailure(ex);
+                    this.sendError(req, res, ex);
                 }
             });
         }

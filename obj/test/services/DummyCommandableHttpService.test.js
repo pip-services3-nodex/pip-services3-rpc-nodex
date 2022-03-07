@@ -99,6 +99,17 @@ suite('DummyCommandableHttpService', () => {
         assert.equal(dummy.content, 'Updated Content 1');
         assert.equal(dummy.key, _dummy1.key);
         dummy1 = dummy;
+        // Get the dummy by id
+        dummy = yield new Promise((resolve, reject) => {
+            rest.post('/dummy/get_dummy_by_id', {
+                dummy_id: dummy1.id
+            }, (err, req, res, dummy) => {
+                if (err == null)
+                    resolve(dummy);
+                else
+                    reject(err);
+            });
+        });
         // Delete dummy
         dummy = yield new Promise((resolve, reject) => {
             rest.post('/dummy/delete_dummy', {
@@ -122,6 +133,18 @@ suite('DummyCommandableHttpService', () => {
             });
         });
         // assert.isObject(dummy);
+    }));
+    test('Failed Validation', () => __awaiter(void 0, void 0, void 0, function* () {
+        // Create one dummy with an invalid id
+        let dummy = yield new Promise((resolve, reject) => {
+            rest.post('/dummy/create_dummy', {}, (err, req, res, dummy) => {
+                assert.equal(err.restCode, 'INVALID_DATA');
+                if (err != null)
+                    resolve(err);
+                else
+                    reject(dummy);
+            });
+        });
     }));
     test('Check correlationId', () => __awaiter(void 0, void 0, void 0, function* () {
         // check transmit correllationId over params

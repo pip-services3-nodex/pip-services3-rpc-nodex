@@ -11,7 +11,7 @@ import { DummyCommandableHttpService } from './DummyCommandableHttpService';
 
 // import * as fs from 'fs';
 
-suite('DummyCommandableHttpService', ()=> {
+suite('DummyCommandableHttpService', () => {
     let _dummy1: Dummy;
     let _dummy2: Dummy;
 
@@ -25,7 +25,7 @@ suite('DummyCommandableHttpService', ()=> {
         "connection.port", 3000,
         "swagger.enable", "true"
     );
-    
+
     suiteSetup(async () => {
         let ctrl = new DummyController();
 
@@ -40,7 +40,7 @@ suite('DummyCommandableHttpService', ()=> {
 
         await service.open(null);
     });
-    
+
     suiteTeardown(async () => {
         await service.close(null);
     });
@@ -49,11 +49,12 @@ suite('DummyCommandableHttpService', ()=> {
         let url = 'http://localhost:3000';
         rest = restify.createJsonClient({ url: url, version: '*', headers: headers });
 
-        _dummy1 = { id: null, key: "Key 1", content: "Content 1", array: [ { key: "SubKey 1", content: "SubContent 1"} ]};
-        _dummy2 = { id: null, key: "Key 2", content: "Content 2", array: [ { key: "SubKey 1", content: "SubContent 1"} ]};
+        _dummy1 = { id: null, key: "Key 1", content: "Content 1", array: [{ key: "SubKey 1", content: "SubContent 1" }] };
+        _dummy2 = { id: null, key: "Key 2", content: "Content 2", array: [{ key: "SubKey 1", content: "SubContent 1" }] };
     });
 
     test('CRUD Operations', async () => {
+
         // Create one dummy
         let dummy = await new Promise<any>((resolve, reject) => {
             rest.post('/dummy/create_dummy',
@@ -122,6 +123,19 @@ suite('DummyCommandableHttpService', ()=> {
 
         dummy1 = dummy;
 
+        // Get the dummy by id
+        dummy = await new Promise<any>((resolve, reject) => {
+            rest.post('/dummy/get_dummy_by_id',
+                {
+                    dummy_id: dummy1.id
+                },
+                (err, req, res, dummy) => {
+                    if (err == null) resolve(dummy);
+                    else reject(err);
+                }
+            );
+        });
+
         // Delete dummy
         dummy = await new Promise<any>((resolve, reject) => {
             rest.post('/dummy/delete_dummy',
@@ -150,6 +164,22 @@ suite('DummyCommandableHttpService', ()=> {
         // assert.isObject(dummy);
     });
 
+    test('Failed Validation', async () => {
+
+        // Create one dummy with an invalid id
+        let dummy = await new Promise<any>((resolve, reject) => {
+            rest.post('/dummy/create_dummy',
+                {
+                },
+                (err, req, res, dummy) => {
+                    assert.equal(err.restCode, 'INVALID_DATA');
+
+                    if (err != null) resolve(err);
+                    else reject(dummy);
+                }
+            );
+        });
+    });
 
     test('Check correlationId', async () => {
         // check transmit correllationId over params
@@ -177,7 +207,7 @@ suite('DummyCommandableHttpService', ()=> {
         });
         assert.equal("test_cor_id_header", result["correlation_id"]);
     });
-    
+
     test('Get OpenApi Spec', async () => {
         let url = 'http://localhost:3000';
         let client = restify.createStringClient({ url: url, version: '*' });

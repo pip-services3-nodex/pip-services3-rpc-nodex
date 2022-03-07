@@ -112,6 +112,7 @@ class CommandableHttpService extends RestService_1.RestService {
                 }
                 catch (ex) {
                     timing.endFailure(ex);
+                    this.sendError(req, res, ex);
                 }
             }));
         }
