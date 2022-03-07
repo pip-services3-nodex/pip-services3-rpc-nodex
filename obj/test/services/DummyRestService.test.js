@@ -115,6 +115,18 @@ suite('DummyRestService', () => {
         });
         // assert.isNull(dummy);
     }));
+    test('Failed Validation', () => __awaiter(void 0, void 0, void 0, function* () {
+        // Create one dummy with an invalid id
+        let dummy = yield new Promise((resolve, reject) => {
+            rest.post('/dummies', {}, (err, req, res, result) => {
+                assert.equal(err.restCode, 'INVALID_DATA');
+                if (err != null)
+                    resolve(err);
+                else
+                    reject(dummy);
+            });
+        });
+    }));
     test('Check correlationId', () => __awaiter(void 0, void 0, void 0, function* () {
         // check transmit correllationId over params
         let result = yield new Promise((resolve, reject) => {
@@ -136,7 +148,7 @@ suite('DummyRestService', () => {
                     reject(err);
             });
         });
-        assert.equal(service.getNumberOfCalls(), 4); // Check interceptor
+        assert.equal(service.getNumberOfCalls(), 5); // Check interceptor
         assert.equal("test_cor_id_header", result.correlation_id);
     }));
     test('Get OpenApi Spec From String', () => __awaiter(void 0, void 0, void 0, function* () {

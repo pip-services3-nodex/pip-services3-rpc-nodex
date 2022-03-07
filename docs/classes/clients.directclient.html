@@ -1,0 +1,647 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>DirectClient | pip-services3-rpc-nodex</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">pip-services3-rpc-nodex</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="../modules/clients.html">clients</a>
+				</li>
+				<li>
+					<a href="clients.directclient.html">DirectClient</a>
+				</li>
+			</ul>
+			<h1>Class DirectClient&lt;T&gt;</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Abstract client that calls controller directly in the same memory space.</p>
+					</div>
+					<p>It is used when multiple microservices are deployed in a single container (monolyth)
+						and communication between them can be done by direct calls rather then through
+					the network.</p>
+					<h3 id="configuration-parameters">Configuration parameters</h3>
+					<ul>
+						<li>dependencies:<ul>
+								<li>controller:            override controller descriptor</li>
+							</ul>
+						</li>
+					</ul>
+					<h3 id="references">References</h3>
+					<ul>
+						<li><code>*:logger:*:*:1.0</code>         (optional) <a href="https://pip-services3-nodex.github.io/pip-services3-components-nodex/interfaces/log.ilogger.html" class="external">ILogger</a> components to pass log messages</li>
+						<li><code>*:counters:*:*:1.0</code>       (optional) <a href="https://pip-services3-nodex.github.io/pip-services3-components-nodex/interfaces/count.icounters.html" class="external">ICounters</a> components to pass collected measurements</li>
+						<li><code>*:tracer:*:*:1.0</code>         (optional) <a href="https://pip-services3-nodex.github.io/pip-services3-components-nodex/interfaces/trace.itracer.html" class="external">ITracer</a> components to record traces</li>
+						<li><code>*:controller:*:*:1.0</code>     controller to call business methods</li>
+					</ul>
+					<h3 id="example">Example</h3>
+					<pre><code><span class="hljs-keyword">class</span> MyDirectClient <span class="hljs-keyword">extends</span> DirectClient&lt;IMyController&gt; <span class="hljs-keyword">implements</span> IMyClient {
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">constructor</span>(<span class="hljs-params"></span>) {
+      <span class="hljs-keyword">super</span>();
+      <span class="hljs-keyword">this</span>._dependencyResolver.put(<span class="hljs-string">'controller'</span>, <span class="hljs-keyword">new</span> Descriptor(
+          <span class="hljs-string">"mygroup"</span>, <span class="hljs-string">"controller"</span>, <span class="hljs-string">"*"</span>, <span class="hljs-string">"*"</span>, <span class="hljs-string">"*"</span>));
+    }
+    ...
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getData(correlationId: <span class="hljs-built_in">string</span>, id: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">Promise</span>&lt;MyData&gt; {
+      <span class="hljs-keyword">let</span> timing = <span class="hljs-keyword">this</span>.instrument(correlationId, <span class="hljs-string">'myclient.get_data'</span>);
+      <span class="hljs-keyword">try</span> {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>._controller.getData(correlationId, id);
+      } <span class="hljs-keyword">catch</span> (ex) {
+        timing.endFailure(ex);
+      } <span class="hljs-keyword">finally</span> {
+        timing.endTiming();
+      }
+    }
+    ...
+}
+
+<span class="hljs-keyword">let</span> client = <span class="hljs-keyword">new</span> MyDirectClient();
+client.setReferences(References.fromTuples(
+    <span class="hljs-keyword">new</span> Descriptor(<span class="hljs-string">"mygroup"</span>,<span class="hljs-string">"controller"</span>,<span class="hljs-string">"default"</span>,<span class="hljs-string">"default"</span>,<span class="hljs-string">"1.0"</span>), controller
+));
+
+<span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> client.getData(<span class="hljs-string">"123"</span>, <span class="hljs-string">"1"</span>);
+</code></pre>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-type-parameters">
+				<h3>Type parameters</h3>
+				<ul class="tsd-type-parameters">
+					<li>
+						<h4>T</h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">DirectClient</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><span class="tsd-signature-type">any</span></li>
+					<li><span class="tsd-signature-type">any</span></li>
+					<li><span class="tsd-signature-type">any</span></li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="clients.directclient.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-private-protected">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="clients.directclient.html#_controller" class="tsd-kind-icon">_controller</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="clients.directclient.html#_counters" class="tsd-kind-icon">_counters</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="clients.directclient.html#_dependencyresolver" class="tsd-kind-icon">_dependency<wbr>Resolver</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="clients.directclient.html#_logger" class="tsd-kind-icon">_logger</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="clients.directclient.html#_opened" class="tsd-kind-icon">_opened</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="clients.directclient.html#_tracer" class="tsd-kind-icon">_tracer</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="clients.directclient.html#close" class="tsd-kind-icon">close</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="clients.directclient.html#configure" class="tsd-kind-icon">configure</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="clients.directclient.html#instrument" class="tsd-kind-icon">instrument</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="clients.directclient.html#isopen" class="tsd-kind-icon">is<wbr>Open</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="clients.directclient.html#open" class="tsd-kind-icon">open</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="clients.directclient.html#setreferences" class="tsd-kind-icon">set<wbr>References</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Direct<wbr>Client<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="clients.directclient.html" class="tsd-signature-type">DirectClient</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in clients/DirectClient.ts:89</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates a new instance of the client.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <a href="clients.directclient.html" class="tsd-signature-type">DirectClient</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-private-protected">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_controller" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _controller</h3>
+					<div class="tsd-signature tsd-kind-icon">_controller<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in clients/DirectClient.ts:69</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The controller reference.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_counters" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _counters</h3>
+					<div class="tsd-signature tsd-kind-icon">_counters<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">CompositeCounters</span><span class="tsd-signature-symbol"> =&nbsp;new CompositeCounters()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in clients/DirectClient.ts:85</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The performance counters</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_dependencyresolver" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _dependency<wbr>Resolver</h3>
+					<div class="tsd-signature tsd-kind-icon">_dependency<wbr>Resolver<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">DependencyResolver</span><span class="tsd-signature-symbol"> =&nbsp;new DependencyResolver()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in clients/DirectClient.ts:89</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The dependency resolver to get controller reference.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_logger" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _logger</h3>
+					<div class="tsd-signature tsd-kind-icon">_logger<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">CompositeLogger</span><span class="tsd-signature-symbol"> =&nbsp;new CompositeLogger()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in clients/DirectClient.ts:77</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The logger.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_opened" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _opened</h3>
+					<div class="tsd-signature tsd-kind-icon">_opened<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;true</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in clients/DirectClient.ts:73</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The open flag.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_tracer" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _tracer</h3>
+					<div class="tsd-signature tsd-kind-icon">_tracer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">CompositeTracer</span><span class="tsd-signature-symbol"> =&nbsp;new CompositeTracer()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in clients/DirectClient.ts:81</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The tracer.</p>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="close" class="tsd-anchor"></a>
+					<h3>close</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">close<span class="tsd-signature-symbol">(</span>correlationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in clients/DirectClient.ts:190</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Closes component and frees used resources.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>correlationId: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>(optional) transaction id to trace execution through call chain.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="configure" class="tsd-anchor"></a>
+					<h3>configure</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">configure<span class="tsd-signature-symbol">(</span>config<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ConfigParams</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in clients/DirectClient.ts:103</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Configures component by passing configuration parameters.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>config: <span class="tsd-signature-type">ConfigParams</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>configuration parameters to be set.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<a name="instrument" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> instrument</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">instrument<span class="tsd-signature-symbol">(</span>correlationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="services.instrumenttiming.html" class="tsd-signature-type">InstrumentTiming</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in clients/DirectClient.ts:128</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Adds instrumentation to log calls and measure call time.
+									It returns a Timing object that is used to end the time measurement.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>correlationId: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>(optional) transaction id to trace execution through call chain.</p>
+									</div>
+								</li>
+								<li>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>a method name.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="services.instrumenttiming.html" class="tsd-signature-type">InstrumentTiming</a></h4>
+							<p>InstrumentTiming object to end the time measurement.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="isopen" class="tsd-anchor"></a>
+					<h3>is<wbr>Open</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Open<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in clients/DirectClient.ts:162</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Checks if the component is opened.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							<p>true if the component has been opened and false otherwise.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="open" class="tsd-anchor"></a>
+					<h3>open</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">open<span class="tsd-signature-symbol">(</span>correlationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in clients/DirectClient.ts:171</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Opens the component.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>correlationId: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>(optional) transaction id to trace execution through call chain.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setreferences" class="tsd-anchor"></a>
+					<h3>set<wbr>References</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>References<span class="tsd-signature-symbol">(</span>references<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IReferences</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in clients/DirectClient.ts:112</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets references to dependent components.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>references: <span class="tsd-signature-type">IReferences</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>references to locate the component dependencies.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/auth.html">auth</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/build.html">build</a>
+					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="../modules/clients.html">clients</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/connect.html">connect</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/index.html">index</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/services.html">services</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/test.html">test</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="clients.commandablehttpclient.html" class="tsd-kind-icon">Commandable<wbr>Http<wbr>Client</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="clients.directclient.html" class="tsd-kind-icon">Direct<wbr>Client</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="clients.directclient.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="clients.directclient.html#_controller" class="tsd-kind-icon">_controller</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="clients.directclient.html#_counters" class="tsd-kind-icon">_counters</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="clients.directclient.html#_dependencyresolver" class="tsd-kind-icon">_dependency<wbr>Resolver</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="clients.directclient.html#_logger" class="tsd-kind-icon">_logger</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="clients.directclient.html#_opened" class="tsd-kind-icon">_opened</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="clients.directclient.html#_tracer" class="tsd-kind-icon">_tracer</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="clients.directclient.html#close" class="tsd-kind-icon">close</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="clients.directclient.html#configure" class="tsd-kind-icon">configure</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="clients.directclient.html#instrument" class="tsd-kind-icon">instrument</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="clients.directclient.html#isopen" class="tsd-kind-icon">is<wbr>Open</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="clients.directclient.html#open" class="tsd-kind-icon">open</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="clients.directclient.html#setreferences" class="tsd-kind-icon">set<wbr>References</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="clients.restclient.html" class="tsd-kind-icon">Rest<wbr>Client</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

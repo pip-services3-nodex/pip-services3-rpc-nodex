@@ -110,6 +110,9 @@ suite('DummyCommandableHttpService', () => {
                     reject(err);
             });
         });
+        assert.isObject(dummy);
+        assert.equal(dummy.id, dummy1.id);
+        assert.equal(dummy.key, _dummy1.key);
         // Delete dummy
         dummy = yield new Promise((resolve, reject) => {
             rest.post('/dummy/delete_dummy', {

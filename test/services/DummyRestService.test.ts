@@ -124,6 +124,20 @@ suite('DummyRestService', ()=> {
         // assert.isNull(dummy);
     });
 
+    test('Failed Validation', async () => {
+
+        // Create one dummy with an invalid id
+        let dummy = await new Promise<any>((resolve, reject) => {
+            rest.post('/dummies', {}, (err, req, res, result) => {
+                    assert.equal(err.restCode, 'INVALID_DATA');
+
+                    if (err != null) resolve(err);
+                    else reject(dummy);
+                }
+            );
+        });
+    });
+
     test('Check correlationId', async () => {
         // check transmit correllationId over params
         let result = await new Promise<any>((resolve, reject) => {
@@ -142,7 +156,7 @@ suite('DummyRestService', ()=> {
                 else reject(err);
             });
         });
-        assert.equal(service.getNumberOfCalls(), 4); // Check interceptor
+        assert.equal(service.getNumberOfCalls(), 5); // Check interceptor
         assert.equal("test_cor_id_header", result.correlation_id);
     });
 

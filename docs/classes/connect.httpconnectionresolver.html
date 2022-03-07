@@ -1,0 +1,488 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>HttpConnectionResolver | pip-services3-rpc-nodex</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">pip-services3-rpc-nodex</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="../modules/connect.html">connect</a>
+				</li>
+				<li>
+					<a href="connect.httpconnectionresolver.html">HttpConnectionResolver</a>
+				</li>
+			</ul>
+			<h1>Class HttpConnectionResolver</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Helper class to retrieve connections for HTTP-based services abd clients.</p>
+					</div>
+					<p>In addition to regular functions of ConnectionResolver is able to parse http:// URIs
+					and validate connection parameters before returning them.</p>
+					<h3 id="configuration-parameters">Configuration parameters</h3>
+					<ul>
+						<li><p>connection:</p>
+							<ul>
+								<li>discovery_key:               (optional) a key to retrieve the connection from <a href="https://pip-services3-nodex.github.io/pip-services3-components-nodex/interfaces/connect.idiscovery.html" class="external">IDiscovery</a></li>
+								<li>...                          other connection parameters</li>
+							</ul>
+						</li>
+						<li><p>connections:                   alternative to connection</p>
+							<ul>
+								<li>[connection params 1]:       first connection parameters</li>
+								<li>...</li>
+								<li>[connection params N]:       Nth connection parameters</li>
+								<li>...</li>
+							</ul>
+						</li>
+					</ul>
+					<h3 id="references">References</h3>
+					<ul>
+						<li><code>*:discovery:*:*:1.0</code>            (optional) <a href="https://pip-services3-nodex.github.io/pip-services3-components-nodex/interfaces/connect.idiscovery.html" class="external">IDiscovery</a> services</li>
+					</ul>
+					<dl class="tsd-comment-tags">
+						<dt>see</dt>
+						<dd><p><a href="https://pip-services3-nodex.github.io/pip-services3-components-nodex/classes/connect.connectionparams.html" class="external">ConnectionParams</a></p>
+						</dd>
+						<dt>see</dt>
+						<dd><p><a href="https://pip-services3-nodex.github.io/pip-services3-components-nodex/classes/connect.connectionresolver.html" class="external">ConnectionResolver</a></p>
+							<h3 id="example">Example</h3>
+							<pre><code><span class="hljs-keyword">let</span> config = <span class="hljs-type">ConfigParams</span>.fromTuples(
+     <span class="hljs-string">"connection.host"</span>, <span class="hljs-string">"10.1.1.100"</span>,
+     <span class="hljs-string">"connection.port"</span>, <span class="hljs-number">8080</span>
+);
+
+<span class="hljs-keyword">let</span> connectionResolver = <span class="hljs-function"><span class="hljs-keyword">new</span> <span class="hljs-title">HttpConnectionResolver</span>();
+<span class="hljs-title">connectionResolver</span>.<span class="hljs-title">configure</span>(config);
+<span class="hljs-title">connectionResolver</span>.<span class="hljs-title">setReferences</span>(references);
+
+<span class="hljs-title">let</span> <span class="hljs-title">connection</span> = <span class="hljs-title">await</span> <span class="hljs-title">connectionResolver</span>.<span class="hljs-title">resolve</span>("<span class="hljs-number">123</span>");
+<span class="hljs-comment">// Now use connection...</span></span>
+</code></pre></dd>
+					</dl>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">HttpConnectionResolver</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><span class="tsd-signature-type">any</span></li>
+					<li><span class="tsd-signature-type">any</span></li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section tsd-is-private-protected">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="connect.httpconnectionresolver.html#_connectionresolver" class="tsd-kind-icon">_connection<wbr>Resolver</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="connect.httpconnectionresolver.html#_credentialresolver" class="tsd-kind-icon">_credential<wbr>Resolver</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="connect.httpconnectionresolver.html#configure" class="tsd-kind-icon">configure</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="connect.httpconnectionresolver.html#register" class="tsd-kind-icon">register</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="connect.httpconnectionresolver.html#resolve" class="tsd-kind-icon">resolve</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="connect.httpconnectionresolver.html#resolveall" class="tsd-kind-icon">resolve<wbr>All</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="connect.httpconnectionresolver.html#setreferences" class="tsd-kind-icon">set<wbr>References</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-private-protected">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_connectionresolver" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _connection<wbr>Resolver</h3>
+					<div class="tsd-signature tsd-kind-icon">_connection<wbr>Resolver<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ConnectionResolver</span><span class="tsd-signature-symbol"> =&nbsp;new ConnectionResolver()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in connect/HttpConnectionResolver.ts:58</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The base connection resolver.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_credentialresolver" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _credential<wbr>Resolver</h3>
+					<div class="tsd-signature tsd-kind-icon">_credential<wbr>Resolver<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">CredentialResolver</span><span class="tsd-signature-symbol"> =&nbsp;new CredentialResolver()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in connect/HttpConnectionResolver.ts:62</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The base credential resolver.</p>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="configure" class="tsd-anchor"></a>
+					<h3>configure</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">configure<span class="tsd-signature-symbol">(</span>config<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ConfigParams</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in connect/HttpConnectionResolver.ts:69</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Configures component by passing configuration parameters.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>config: <span class="tsd-signature-type">ConfigParams</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>configuration parameters to be set.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="register" class="tsd-anchor"></a>
+					<h3>register</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">register<span class="tsd-signature-symbol">(</span>correlationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in connect/HttpConnectionResolver.ts:206</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Registers the given connection in all referenced discovery services.
+									This method can be used for dynamic service discovery.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>correlationId: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>(optional) transaction id to trace execution through call chain.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="resolve" class="tsd-anchor"></a>
+					<h3>resolve</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">resolve<span class="tsd-signature-symbol">(</span>correlationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ConfigParams</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in connect/HttpConnectionResolver.ts:173</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Resolves a single component connection. If connections are configured to be retrieved
+									from Discovery service it finds a IDiscovery and resolves the connection there.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>correlationId: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>(optional) transaction id to trace execution through call chain.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ConfigParams</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>a resolved connection options</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="resolveall" class="tsd-anchor"></a>
+					<h3>resolve<wbr>All</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">resolve<wbr>All<span class="tsd-signature-symbol">(</span>correlationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ConfigParams</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in connect/HttpConnectionResolver.ts:187</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Resolves all component connection. If connections are configured to be retrieved
+									from Discovery service it finds a IDiscovery and resolves the connection there.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>correlationId: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>(optional) transaction id to trace execution through call chain.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ConfigParams</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>a resolved connection options</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setreferences" class="tsd-anchor"></a>
+					<h3>set<wbr>References</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>References<span class="tsd-signature-symbol">(</span>references<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IReferences</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in connect/HttpConnectionResolver.ts:79</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets references to dependent components.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>references: <span class="tsd-signature-type">IReferences</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>references to locate the component dependencies.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/auth.html">auth</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/build.html">build</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/clients.html">clients</a>
+					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="../modules/connect.html">connect</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/index.html">index</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/services.html">services</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/test.html">test</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-external-module">
+						<a href="connect.httpconnectionresolver.html" class="tsd-kind-icon">Http<wbr>Connection<wbr>Resolver</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="connect.httpconnectionresolver.html#_connectionresolver" class="tsd-kind-icon">_connection<wbr>Resolver</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="connect.httpconnectionresolver.html#_credentialresolver" class="tsd-kind-icon">_credential<wbr>Resolver</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="connect.httpconnectionresolver.html#configure" class="tsd-kind-icon">configure</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="connect.httpconnectionresolver.html#register" class="tsd-kind-icon">register</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="connect.httpconnectionresolver.html#resolve" class="tsd-kind-icon">resolve</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="connect.httpconnectionresolver.html#resolveall" class="tsd-kind-icon">resolve<wbr>All</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="connect.httpconnectionresolver.html#setreferences" class="tsd-kind-icon">set<wbr>References</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
