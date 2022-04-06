@@ -82,6 +82,7 @@ export abstract class CommandableHttpClient extends RestClient {
             return await this.call<T>('post', name, correlationId, {}, params || {});
         } catch (ex) {
             timing.endFailure(ex);
+            throw ex;
         } finally {
             timing.endTiming();
         }

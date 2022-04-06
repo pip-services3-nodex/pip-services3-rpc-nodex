@@ -94,6 +94,7 @@ class CommandableHttpClient extends RestClient_1.RestClient {
             }
             catch (ex) {
                 timing.endFailure(ex);
+                throw ex;
             }
             finally {
                 timing.endTiming();
