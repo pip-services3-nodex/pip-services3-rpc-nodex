@@ -27,7 +27,9 @@ class HttpResponseSender {
             component: error.component,
             stack: error.stack,
             cause: error.cause,
-            details: error.details
+            details: error.details,
+            type: error.type,
+            category: error.category || pip_services3_commons_nodex_1.ErrorCategory.Unknown
         };
         res.status(result.status);
         res.json(result);

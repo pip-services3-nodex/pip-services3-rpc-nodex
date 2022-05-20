@@ -1,5 +1,5 @@
 /** @module services */
-import { ApplicationException } from 'pip-services3-commons-nodex';
+import { ApplicationException, ErrorCategory, ErrorDescription } from 'pip-services3-commons-nodex';
 
 /**
  * Helper class that handles HTTP-based responses.
@@ -26,7 +26,9 @@ export class HttpResponseSender {
             component: error.component,
             stack: error.stack,
             cause: error.cause,
-            details: error.details
+            details: error.details,
+            type: error.type,
+            category: error.category || ErrorCategory.Unknown
         }
 
         res.status(result.status);
