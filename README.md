@@ -13,15 +13,15 @@ The module contains the following packages:
 
 <a name="links"></a> Quick links:
 
-* [Your first microservice in Node.js](https://www.pipservices.org/docs/quickstart/nodejs) 
-* [Data Microservice. Step 5](https://www.pipservices.org/docs/tutorials/data-microservice/service)
-* [Microservice Facade](https://www.pipservices.org/docs/tutorials/microservice-facade/microservice-facade-main) 
-* [Client Library. Step 2](https://www.pipservices.org/docs/tutorials/client-lib/direct-client)
-* [Client Library. Step 3](https://www.pipservices.org/docs/tutorials/client-lib/http-client)
+* [Your first microservice in Node.js](http://docs.pipservices.org/toolkit/getting_started/your_first_microservice/) 
+* [Data Microservice. Step 5](http://docs.pipservices.org/toolkit/tutorials/data_microservice/step5/)
+* [Microservice Facade](http://docs.pipservices.org/toolkit/tutorials/microservice_facade/) 
+* [Client Library. Step 3](http://docs.pipservices.org/toolkit/tutorials/client_library/step2/)
+* [Client Library. Step 4](http://docs.pipservices.org/toolkit/tutorials/client_library/step3/)
 * [API Reference](https://pip-services3-nodex.github.io/pip-services3-rpc-nodex/globals.html)
 * [Change Log](CHANGELOG.md)
-* [Get Help](https://www.pipservices.org/community/help)
-* [Contribute](https://www.pipservices.org/community/contribute)
+* [Get Help](http://docs.pipservices.org/get_help/)
+* [Contribute](http://docs.pipservices.org/contribute/)
 
 
 ## Use
