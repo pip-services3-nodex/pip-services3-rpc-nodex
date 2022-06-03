@@ -48,9 +48,7 @@ jobs:
     - name: Release binary artifacts
       uses: pip-devops/actions/node/release@v1
       with:
-        npm-user: ${{ secrets.NPM_USER }}
-        npm-pass: ${{ secrets.NPM_PASS }}
-        npm-email: ${{ secrets.NPM_EMAIL }}
+        npm-token: ${{ secrets.NPM_TOKEN }}
 
     ############# Clear #############
 
