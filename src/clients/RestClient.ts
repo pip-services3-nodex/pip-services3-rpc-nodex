@@ -1,6 +1,4 @@
 /** @module clients */
-/** @hidden */
-let querystring = require('querystring');
 
 import { IOpenable } from 'pip-services3-commons-nodex';
 import { IConfigurable } from 'pip-services3-commons-nodex';
@@ -371,7 +369,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
         }
 
         if (params != null && Object.keys(params).length > 0) {
-            route += '?' + querystring.stringify(params);
+            route += '?' + new URLSearchParams(params).toString()
         }
 
         return new Promise((resolve, reject) => {

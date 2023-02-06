@@ -413,20 +413,24 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
         route = this.fixRoute(route);
 
         // Hack!!! Wrapping action to preserve prototyping context
-        let actionCurl = (req, res) => { 
+        let actionCurl = (req, res, next) => { 
             // Perform validation
             if (schema != null) {
                 let params = Object.assign({}, req.params, req.query, { body: req.body });
                 let correlationId = this.getCorrelationId(req);
                 let err = schema.validateAndReturnException(correlationId, params, false);
                 if (err != null) {
-                    HttpResponseSender.sendError(req, res, err);
+                    new Promise((resolve) => {
+                        resolve(HttpResponseSender.sendError(req, res, err));
+                    }).then(() => next());
                     return;
                 }
             }
 
             // Todo: perform verification?
-            action(req, res); 
+            new Promise((resolve) => {
+                resolve(action(req, res));
+            }).then(() => next());
         };
 
         // Wrapping to preserve "this"

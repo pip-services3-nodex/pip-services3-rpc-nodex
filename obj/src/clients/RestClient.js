@@ -1,4 +1,5 @@
 "use strict";
+/** @module clients */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,9 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RestClient = void 0;
-/** @module clients */
-/** @hidden */
-let querystring = require('querystring');
 const pip_services3_commons_nodex_1 = require("pip-services3-commons-nodex");
 const pip_services3_components_nodex_1 = require("pip-services3-components-nodex");
 const pip_services3_components_nodex_2 = require("pip-services3-components-nodex");
@@ -325,7 +323,7 @@ class RestClient {
                 this._headers['correlation_id'] = correlationId;
             }
             if (params != null && Object.keys(params).length > 0) {
-                route += '?' + querystring.stringify(params);
+                route += '?' + new URLSearchParams(params).toString();
             }
             return new Promise((resolve, reject) => {
                 let action = (err, req, res, data) => {

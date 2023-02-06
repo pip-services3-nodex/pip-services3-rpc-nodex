@@ -7,3 +7,4 @@
 /data/dummies.json
 package-lock.json
 .npmrc
+id_rsa
