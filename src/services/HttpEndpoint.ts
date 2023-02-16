@@ -413,8 +413,8 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
 
         route = this.fixRoute(route);
 
-        // Hack!!! Wrapping action to preserve prototyping context
-        let actionCurl = (req, res, next) => { 
+        // Hack!!! Wrapping action to preserve prototyping conte
+        let actionCurl = async (req, res, next) => { 
             // Perform validation
             if (schema != null) {
                 let params = Object.assign({}, req.params, req.query, { body: req.body });
@@ -429,16 +429,15 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
             }
 
             // Todo: perform verification?
-            new Promise((resolve) => {
-                resolve(action(req, res));
-            }).then(() => next());
+            await action(req, res);
+            next()
         };
 
         // Wrapping to preserve "this"
         let self = this;
         this._server[method](route, actionCurl);
     }   
-    
+
     /**
      * Registers an action with authorization in this objects REST server (service)
      * by the given method and route.

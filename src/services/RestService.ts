@@ -389,8 +389,8 @@ export abstract class RestService implements IOpenable, IConfigurable, IReferenc
 
         this._endpoint.registerRoute(
             method, route, schema,
-            (req, res) => {
-                action.call(this, req, res);
+            async (req, res) => {
+                await action.call(this, req, res);
             }
         );
     }

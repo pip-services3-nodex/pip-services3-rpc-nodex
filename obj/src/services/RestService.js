@@ -338,9 +338,9 @@ class RestService {
         if (this._endpoint == null)
             return;
         route = this.appendBaseRoute(route);
-        this._endpoint.registerRoute(method, route, schema, (req, res) => {
-            action.call(this, req, res);
-        });
+        this._endpoint.registerRoute(method, route, schema, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield action.call(this, req, res);
+        }));
     }
     /**
      * Registers a route with authorization in HTTP endpoint.

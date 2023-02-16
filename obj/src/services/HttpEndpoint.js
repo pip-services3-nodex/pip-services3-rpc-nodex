@@ -364,8 +364,8 @@ class HttpEndpoint {
         if (method == 'delete')
             method = 'del';
         route = this.fixRoute(route);
-        // Hack!!! Wrapping action to preserve prototyping context
-        let actionCurl = (req, res, next) => {
+        // Hack!!! Wrapping action to preserve prototyping conte
+        let actionCurl = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             // Perform validation
             if (schema != null) {
                 let params = Object.assign({}, req.params, req.query, { body: req.body });
@@ -379,10 +379,9 @@ class HttpEndpoint {
                 }
             }
             // Todo: perform verification?
-            new Promise((resolve) => {
-                resolve(action(req, res));
-            }).then(() => next());
-        };
+            yield action(req, res);
+            next();
+        });
         // Wrapping to preserve "this"
         let self = this;
         this._server[method](route, actionCurl);
