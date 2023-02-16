@@ -90,14 +90,13 @@ class CommandableHttpClient extends RestClient_1.RestClient {
         return __awaiter(this, void 0, void 0, function* () {
             let timing = this.instrument(correlationId, this._baseRoute + '.' + name);
             try {
-                return yield this.call('post', name, correlationId, {}, params || {});
+                let response = yield this.call('post', name, correlationId, {}, params || {});
+                timing.endTiming();
+                return response;
             }
             catch (ex) {
                 timing.endFailure(ex);
                 throw ex;
-            }
-            finally {
-                timing.endTiming();
             }
         });
     }

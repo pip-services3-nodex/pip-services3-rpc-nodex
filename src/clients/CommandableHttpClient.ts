@@ -79,12 +79,12 @@ export abstract class CommandableHttpClient extends RestClient {
     protected async callCommand<T>(name: string, correlationId: string, params: any): Promise<T> {
         let timing = this.instrument(correlationId, this._baseRoute + '.' + name);
         try {
-            return await this.call<T>('post', name, correlationId, {}, params || {});
+            let response = await this.call<T>('post', name, correlationId, {}, params || {});
+            timing.endTiming();
+            return response;
         } catch (ex) {
             timing.endFailure(ex);
             throw ex;
-        } finally {
-            timing.endTiming();
         }
     }
 }

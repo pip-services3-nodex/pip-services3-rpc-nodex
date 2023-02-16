@@ -13,6 +13,7 @@ exports.HttpEndpoint = void 0;
 /** @module services */
 /** @hidden */
 const fs = require('fs');
+const restify = require("restify");
 const pip_services3_commons_nodex_1 = require("pip-services3-commons-nodex");
 const pip_services3_components_nodex_1 = require("pip-services3-components-nodex");
 const pip_services3_components_nodex_2 = require("pip-services3-components-nodex");
@@ -187,7 +188,6 @@ class HttpEndpoint {
                 }
                 options.handleUpgrades = this._protocolUpgradeEnabled;
                 // Create instance of restify application   
-                let restify = require('restify');
                 this._server = restify.createServer(options);
                 // Configure restify application
                 this._server.use(restify.plugins.acceptParser(this._server.acceptable));

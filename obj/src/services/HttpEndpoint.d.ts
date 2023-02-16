@@ -1,3 +1,4 @@
+import restify = require('restify');
 import { IOpenable } from 'pip-services3-commons-nodex';
 import { IConfigurable } from 'pip-services3-commons-nodex';
 import { IReferenceable } from 'pip-services3-commons-nodex';
@@ -99,7 +100,7 @@ export declare class HttpEndpoint implements IOpenable, IConfigurable, IReferenc
      * Gets an HTTP server instance.
      * @returns an HTTP server instance of <code>null</code> if endpoint is closed.
      */
-    getServer(): any;
+    getServer(): restify.Server;
     /**
      * @returns whether or not this endpoint is open with an actively listening REST server.
      */

@@ -2,6 +2,8 @@
 /** @hidden */
 const fs = require('fs');
 
+import restify = require('restify');
+
 import { IOpenable } from 'pip-services3-commons-nodex';
 import { IConfigurable } from 'pip-services3-commons-nodex';
 import { IReferenceable } from 'pip-services3-commons-nodex';
@@ -78,10 +80,10 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
         "options.debug", true
     );
 
-	private _server: any;
-	private _connectionResolver: HttpConnectionResolver = new HttpConnectionResolver();
-	private _logger: CompositeLogger = new CompositeLogger();
-	private _counters: CompositeCounters = new CompositeCounters();
+    private _server: restify.Server;
+    private _connectionResolver: HttpConnectionResolver = new HttpConnectionResolver();
+    private _logger: CompositeLogger = new CompositeLogger();
+    private _counters: CompositeCounters = new CompositeCounters();
     private _maintenanceEnabled: boolean = false;
     private _fileMaxSize: number = 200 * 1024 * 1024;
     private _protocolUpgradeEnabled: boolean = false;
@@ -108,9 +110,9 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
      * 
      * @see [[https://pip-services3-nodex.github.io/pip-services3-commons-nodex/classes/config.configparams.html ConfigParams]] (in the PipServices "Commons" package)
      */
-	public configure(config: ConfigParams): void {
-		config = config.setDefaults(HttpEndpoint._defaultConfig);
-		this._connectionResolver.configure(config);
+    public configure(config: ConfigParams): void {
+        config = config.setDefaults(HttpEndpoint._defaultConfig);
+        this._connectionResolver.configure(config);
 
         this._maintenanceEnabled = config.getAsBooleanWithDefault('options.maintenance_enabled', this._maintenanceEnabled);
         this._fileMaxSize = config.getAsLongWithDefault('options.file_max_size', this._fileMaxSize);
@@ -121,7 +123,7 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
             header = header.trim();
             if (header != "") {
                 this._allowedHeaders = this._allowedHeaders.filter(h => h != header);
-                this._allowedHeaders.push(header);                
+                this._allowedHeaders.push(header);
             }
         }
 
@@ -130,11 +132,11 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
             origin = origin.trim();
             if (origin != "") {
                 this._allowedOrigins = this._allowedOrigins.filter(h => h != origin);
-                this._allowedOrigins.push(origin);                
+                this._allowedOrigins.push(origin);
             }
         }
     }
-        
+
     /**
      * Sets references to this endpoint's logger, counters, and connection resolver.
      * 
@@ -148,54 +150,54 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
      * 
      * @see [[https://pip-services3-nodex.github.io/pip-services3-commons-nodex/interfaces/refer.ireferences.html IReferences]] (in the PipServices "Commons" package)
      */
-	public setReferences(references: IReferences): void {
-		this._logger.setReferences(references);
-		this._counters.setReferences(references);
-		this._connectionResolver.setReferences(references);
-	}
+    public setReferences(references: IReferences): void {
+        this._logger.setReferences(references);
+        this._counters.setReferences(references);
+        this._connectionResolver.setReferences(references);
+    }
 
     /**
      * Gets an HTTP server instance.
      * @returns an HTTP server instance of <code>null</code> if endpoint is closed.
      */
-    public getServer(): any {
+    public getServer(): restify.Server {
         return this._server;
     }
 
     /**
      * @returns whether or not this endpoint is open with an actively listening REST server.
      */
-	public isOpen(): boolean {
-		return this._server != null;
-	}
-    
+    public isOpen(): boolean {
+        return this._server != null;
+    }
+
     /**
      * Opens a connection using the parameters resolved by the referenced connection
      * resolver and creates a REST server (service) using the set options and parameters.
      * 
      * @param correlationId     (optional) transaction id to trace execution through call chain.
      */
-	public async open(correlationId: string): Promise<void> {
-    	if (this.isOpen()) {
+    public async open(correlationId: string): Promise<void> {
+        if (this.isOpen()) {
             return;
         }
-    	
-		let connection = await this._connectionResolver.resolve(correlationId);
+
+        let connection = await this._connectionResolver.resolve(correlationId);
 
         this._uri = connection.getAsString("uri");
         let port = connection.getAsInteger("port");
         let host = connection.getAsString("host");
 
         try {
-            let options: any = {};
+            let options: restify.ServerOptions = {};
 
             if (connection.getAsStringWithDefault('protocol', 'http') == 'https') {
                 let sslKeyFile = connection.getAsNullableString('ssl_key_file');
                 let privateKey = fs.readFileSync(sslKeyFile).toString();
-    
+
                 let sslCrtFile = connection.getAsNullableString('ssl_crt_file');
                 let certificate = fs.readFileSync(sslCrtFile).toString();
-    
+
                 let ca = [];
                 let sslCaFile = connection.getAsNullableString('ssl_ca_file');
                 if (sslCaFile != null) {
@@ -208,15 +210,14 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
                         }
                     }
                 }
-    
+
                 options.key = privateKey;
                 options.certificate = certificate;
                 //options.ca = ca;
             }
             options.handleUpgrades = this._protocolUpgradeEnabled;
-                         
+
             // Create instance of restify application   
-            let restify = require('restify'); 
             this._server = restify.createServer(options);
                 
             // Configure restify application
