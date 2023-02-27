@@ -413,6 +413,12 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
 
         route = this.fixRoute(route);
 
+        let asyncWrap = (fn) => {
+            return (req, res, next) => {
+                Promise.resolve(fn(req, res, next)).catch(next);
+            };
+        };
+
         // Hack!!! Wrapping action to preserve prototyping conte
         let actionCurl = async (req, res, next) => { 
             // Perform validation
@@ -430,12 +436,12 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
 
             // Todo: perform verification?
             await action(req, res);
-            next()
+            // next();
         };
 
         // Wrapping to preserve "this"
         let self = this;
-        this._server[method](route, actionCurl);
+        this._server[method](route, asyncWrap(actionCurl));
     }   
 
     /**
@@ -454,8 +460,8 @@ export class HttpEndpoint implements IOpenable, IConfigurable, IReferenceable {
             
         if (authorize) {
             let nextAction = action;
-            action = (req, res) => {
-                authorize(req, res, () => { nextAction(req, res); });
+            action = async (req, res) => {
+                await authorize(req, res, async () => { await nextAction(req, res); });
             }
         }
 

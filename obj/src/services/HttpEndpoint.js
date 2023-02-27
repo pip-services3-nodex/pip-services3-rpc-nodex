@@ -364,6 +364,11 @@ class HttpEndpoint {
         if (method == 'delete')
             method = 'del';
         route = this.fixRoute(route);
+        let asyncWrap = (fn) => {
+            return (req, res, next) => {
+                Promise.resolve(fn(req, res, next)).catch(next);
+            };
+        };
         // Hack!!! Wrapping action to preserve prototyping conte
         let actionCurl = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             // Perform validation
@@ -380,11 +385,11 @@ class HttpEndpoint {
             }
             // Todo: perform verification?
             yield action(req, res);
-            next();
+            // next();
         });
         // Wrapping to preserve "this"
         let self = this;
-        this._server[method](route, actionCurl);
+        this._server[method](route, asyncWrap(actionCurl));
     }
     /**
      * Registers an action with authorization in this objects REST server (service)
@@ -399,9 +404,9 @@ class HttpEndpoint {
     registerRouteWithAuth(method, route, schema, authorize, action) {
         if (authorize) {
             let nextAction = action;
-            action = (req, res) => {
-                authorize(req, res, () => { nextAction(req, res); });
-            };
+            action = (req, res) => __awaiter(this, void 0, void 0, function* () {
+                yield authorize(req, res, () => __awaiter(this, void 0, void 0, function* () { yield nextAction(req, res); }));
+            });
         }
         this.registerRoute(method, route, schema, action);
     }

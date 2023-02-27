@@ -355,14 +355,14 @@ class RestService {
         if (this._endpoint == null)
             return;
         route = this.appendBaseRoute(route);
-        this._endpoint.registerRouteWithAuth(method, route, schema, (req, res, next) => {
+        this._endpoint.registerRouteWithAuth(method, route, schema, (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             if (authorize)
-                authorize.call(this, req, res, next);
+                yield authorize.call(this, req, res, next);
             else
                 next();
-        }, (req, res) => {
-            action.call(this, req, res);
-        });
+        }), (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield action.call(this, req, res);
+        }));
     }
     /**
      * Registers a middleware for a given route in HTTP endpoint.
