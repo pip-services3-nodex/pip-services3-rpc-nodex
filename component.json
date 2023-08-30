@@ -2,7 +2,7 @@
     "name":  "pip-services3-rpc-nodex",
     "type": "module",
     "language": "node",
-    "version": "1.3.2",
+    "version": "1.3.3",
     "build": 0,
     "registry": "pipservices",
     "artifacts": [

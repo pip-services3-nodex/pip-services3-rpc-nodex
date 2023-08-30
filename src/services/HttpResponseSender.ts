@@ -110,7 +110,8 @@ export class HttpResponseSender {
             result
             .then((result) => {
                 if (result == null) {
-                    res.status(204)
+                    res.status(204);
+                    res.end();
                 } else {
                     res.status(201)
                     res.json(result);
@@ -121,9 +122,10 @@ export class HttpResponseSender {
             });    
         } else {
             if (result == null) {
-                res.status(204)
+                res.status(204);
+                res.end();
             } else {
-                res.status(201)
+                res.status(201);
                 res.json(result);
             }
         }
@@ -147,7 +149,8 @@ export class HttpResponseSender {
             result
             .then((result) => {
                 if (result == null) {
-                    res.status(204)
+                    res.status(204);
+                    res.end();
                 } else {
                     res.status(200)
                     res.json(result);
@@ -158,9 +161,10 @@ export class HttpResponseSender {
             });    
         } else {
             if (result == null) {
-                res.status(204)
+                res.status(204);
+                res.end();
             } else {
-                res.status(200)
+                res.status(200);
                 res.json(result);
             }
         }

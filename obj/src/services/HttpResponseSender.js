@@ -112,6 +112,7 @@ class HttpResponseSender {
                 .then((result) => {
                 if (result == null) {
                     res.status(204);
+                    res.end();
                 }
                 else {
                     res.status(201);
@@ -125,6 +126,7 @@ class HttpResponseSender {
         else {
             if (result == null) {
                 res.status(204);
+                res.end();
             }
             else {
                 res.status(201);
@@ -151,6 +153,7 @@ class HttpResponseSender {
                 .then((result) => {
                 if (result == null) {
                     res.status(204);
+                    res.end();
                 }
                 else {
                     res.status(200);
@@ -164,6 +167,7 @@ class HttpResponseSender {
         else {
             if (result == null) {
                 res.status(204);
+                res.end();
             }
             else {
                 res.status(200);

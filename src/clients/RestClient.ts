@@ -372,7 +372,7 @@ export abstract class RestClient implements IOpenable, IConfigurable, IReference
             route += '?' + new URLSearchParams(params).toString()
         }
 
-        return new Promise((resolve, reject) => {
+        return new Promise<T>((resolve, reject) => {
             let action = (err, req, res, data) => {
                 // Handling 204 codes
                 if (res && res.statusCode == 204)
